@@ -1,13 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Chat from './components/Chat'
+import ConnectedUsers from './components/ConnectedUsers';
 
 function App() {
     return (
         <>
+            <div className='flex justify-center gap-10 pt-20'>
+                <ConnectedUsers />
+                <Chat />
+            </div>
         </>
     )
 }
 
-export default App
+export default App;
