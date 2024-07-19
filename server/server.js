@@ -3,6 +3,7 @@ const app = express();
 const http = require('http').createServer(app);
 const cors = require('cors');
 const { Server } = require('socket.io');
+const { log } = require('console');
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 
@@ -16,18 +17,25 @@ const io = new Server(http, {
 
 app.use(express.static('public'));
 
-let connectedUsers = {}; 
-let messageHistory = []; // Array to store chat messages
+let connectedUsers = {};
+let messageHistory = [];
 
 io.on('connection', (socket) => {
     console.log('A user connected!');
+    const emitConnectedUsers = () => {
+        const users = Object.values(connectedUsers).map(user => user.username);
+        io.emit('connectedUsers', users);
+    };
+
+    emitConnectedUsers();
 
     socket.on('joinChat', (username) => {
+        // TODO check edit
         if (!username) {
             console.error('Username is required');
             return;
         }
-        // Check if username is already taken
+
         for (let id in connectedUsers) {
             if (connectedUsers[id].username === username) {
                 socket.emit('usernameError', 'Username is already taken');
@@ -36,8 +44,10 @@ io.on('connection', (socket) => {
         }
         connectedUsers[socket.id] = { username };
         console.log(`User ${username} joined the chat`);
-        socket.emit('chatHistory', messageHistory); // Send message history to the new user
+
+        socket.emit('chatHistory', messageHistory);
         socket.broadcast.emit('userJoined', username);
+        emitConnectedUsers(); 
     });
 
     socket.on('sendMessage', (message) => {
@@ -48,9 +58,9 @@ io.on('connection', (socket) => {
         }
         const timestamp = new Date().toISOString();
         const newMessage = { username: user.username, message, timestamp };
-        messageHistory.push(newMessage); // Save the message to history
-        if (messageHistory.length > 100) {
-            messageHistory.shift(); // Remove the oldest message if the array exceeds 100 messages
+        messageHistory.push(newMessage);
+        if (messageHistory.length > 100) { // TODO check edit
+            messageHistory.shift();
         }
         io.emit('newMessage', newMessage);
     });
@@ -61,7 +71,9 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('userLeft', user.username);
             console.log(`${user.username} has left the chat`);
             delete connectedUsers[socket.id];
+            emitConnectedUsers(); 
         }
+
     });
 });
 
