@@ -19,18 +19,19 @@ app.use(express.static('public'));
 
 let connectedUsers = {};
 let messageHistory = [];
+let rooms = {
+    'room1': [],
+    'room2': [],
+    'room3': []
+}
 
 io.on('connection', (socket) => {
-    console.log('A user connected!');
     const emitConnectedUsers = () => {
         const users = Object.values(connectedUsers).map(user => user.username);
         io.emit('connectedUsers', users);
     };
 
-    emitConnectedUsers();
-
-    socket.on('joinChat', (username) => {
-        // TODO check edit
+    socket.on('userConnect', (username) => {
         if (!username) {
             console.error('Username is required');
             return;
@@ -42,20 +43,43 @@ io.on('connection', (socket) => {
                 return;
             }
         }
-        connectedUsers[socket.id] = { username };
-        console.log(`User ${username} joined the chat`);
 
-        socket.emit('chatHistory', messageHistory);
-        socket.broadcast.emit('userJoined', username);
-        emitConnectedUsers(); 
+        connectedUsers[socket.id] = { username };
+        console.log(`User ${username} has joined`);
+        io.emit('userJoined', username);
+        emitConnectedUsers();
     });
 
-    socket.on('sendMessage', (message) => {
+    socket.on('joinRoom', (username, room) => {
+        // TODO check edit
+        // if (!username) {
+        //     console.error('Username is required');
+        //     return;
+        // }
+
+        // for (let id in connectedUsers) {
+        //     if (connectedUsers[id].username === username) {
+        //         socket.emit('usernameError', 'Username is already taken');
+        //         return;
+        //     }
+        // }
+        connectedUsers[socket.id] = { username, room };
+        console.log(room);
+        socket.join(room);
+        rooms[room].push(username);
+        console.log(`${username} has joined the ${room} room`);
+
+        socket.emit('chatHistory', messageHistory);
+        socket.broadcast.emit('userJoinedRoom', username);
+        emitConnectedUsers();
+    });
+
+    socket.on('sendMessage', ({ message, room }) => {
         const user = connectedUsers[socket.id];
-        if (!user) {
-            console.error('User not found for socket ID:', socket.id);
-            return;
-        }
+        // if (!user) {
+        //     console.error('User not found for socket ID:', socket.id);
+        //     return;
+        // }
         const timestamp = new Date().toISOString();
         const newMessage = { username: user.username, message, timestamp };
         messageHistory.push(newMessage);
@@ -71,7 +95,7 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('userLeft', user.username);
             console.log(`${user.username} has left the chat`);
             delete connectedUsers[socket.id];
-            emitConnectedUsers(); 
+            emitConnectedUsers();
         }
 
     });
