@@ -3,7 +3,6 @@ const app = express();
 const http = require('http').createServer(app);
 const cors = require('cors');
 const { Server } = require('socket.io');
-const { log } = require('console');
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 
@@ -30,6 +29,8 @@ io.on('connection', (socket) => {
         const users = Object.values(connectedUsers).map(user => user.username);
         io.emit('connectedUsers', users);
     };
+
+    emitConnectedUsers();
 
     socket.on('userConnect', (username) => {
         if (!username) {
