@@ -6,11 +6,13 @@ import Username from './components/Username';
 import RoomSelector from './components/RoomSelector';
 import { UsernameContext } from './contexts/UsernameContext';
 import { useContext, useEffect } from 'react';
+import Notification from './components/Notification';
 
 function App() {
     const { username } = useContext(UsernameContext);
     const location = useLocation();
     const navigate = useNavigate();
+    const isChatRoute = location.pathname.startsWith('/chat/');
 
     useEffect(() => {
         if (!username && location.pathname !== '/') {
@@ -26,15 +28,21 @@ function App() {
                 </>
             }
 
-            <div className='flex justify-center gap-36 pt-20'>
-                <ConnectedUsers />
-                <Routes>
-                    <Route path="/" element={<Username />} />
-                    <Route path="/rooms" element={<RoomSelector />} />
-                    <Route path="/chat/:roomId" element={<Chat />} />
-                    <Route path='*' element={<Navigate to="/" replace />} />
-                </Routes>
-            </div>
+            {!isChatRoute && (
+                <div className='flex justify-center gap-20 pt-14 h-[70%]'>
+                    <ConnectedUsers />
+                    <Routes>
+                        <Route path="/" element={<Username />} />
+                        <Route path="/rooms" element={<RoomSelector />} />
+                        <Route path="/chat/:roomId" element={<Chat />} />
+                        <Route path='*' element={<Navigate to="/" replace />} />
+                    </Routes>
+                </div>
+            )}
+
+            {isChatRoute && <Chat />}
+            <Chat />
+            <Notification />
         </>
     )
 }
