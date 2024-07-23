@@ -24,12 +24,20 @@ let rooms = {
     'room3': []
 }
 
-io.on('connection', (socket) => {
-    const emitConnectedUsers = () => {
-        const users = Object.values(connectedUsers).map(user => user.username);
-        io.emit('connectedUsers', users);
-    };
+const emitConnectedUsers = () => {
+    const users = Object.values(connectedUsers).map(user => user.username);
+    io.emit('connectedUsers', users);
+};
 
+const emitUsersInRoom = (room) => {
+    const usersInRoom = Object.values(connectedUsers)
+        .filter(user => user.room === room)
+        .map(user => user.username);
+    io.to(room).emit('usersInRoom', usersInRoom);
+};
+
+
+io.on('connection', (socket) => {
     emitConnectedUsers();
 
     socket.on('userConnect', (username) => {
@@ -45,38 +53,59 @@ io.on('connection', (socket) => {
             }
         }
 
-        connectedUsers[socket.id] = { username };
-        console.log(`User ${username} has joined`);
-        io.emit('userJoined', username);
+        connectedUsers[socket.id] = { username, room: null };
+        console.log(connectedUsers);
+        console.log(`User ${username} connected with ID: ${socket.id}`);
+        io.emit('userConnected', username);
         emitConnectedUsers();
     });
 
     socket.on('joinRoom', (username, room) => {
-        // TODO check edit
-        // if (!username) {
-        //     console.error('Username is required');
-        //     return;
-        // }
+        let targetSocketId;
+        for (let socketId in connectedUsers) {
+            if (connectedUsers[socketId].username === username) {
+                targetSocketId = socketId;
+                break;
+            };
+        }
+        console.log("targetSocketId: ", targetSocketId);
 
-        // for (let id in connectedUsers) {
-        //     if (connectedUsers[id].username === username) {
-        //         socket.emit('usernameError', 'Username is already taken');
-        //         return;
-        //     }
-        // }
-        connectedUsers[socket.id] = { username, room };
-        console.log(room);
+        connectedUsers[targetSocketId] = { username, room };
         socket.join(room);
         rooms[room].push(username);
+
         console.log(`${username} has joined the ${room} room`);
 
         socket.emit('chatHistory', messageHistory);
-        socket.broadcast.emit('userJoinedRoom', username);
+        io.to(room).emit('userJoinedRoom', { username, room });
+        emitUsersInRoom(room);
+    });
+
+    socket.on('leaveRoom', (username, room) => {
+        let targetSocketId;
+        for (let socketId in connectedUsers) {
+            if (connectedUsers[socketId].username === username) {
+                targetSocketId = socketId;
+                break;
+            };
+        }
+
+        socket.leave(room);
+        rooms[room] = rooms[room].filter(user => user !== username);
+        io.to(room).emit('userLeftRoom', username);
+
+        connectedUsers[targetSocketId].room = null;
+        console.log(`${username} has left ${room}`);
+        console.log(connectedUsers);
+        emitUsersInRoom(room);
+        console.log(`rooms`, rooms);
         emitConnectedUsers();
     });
 
+    // TODO Edit
     socket.on('sendMessage', ({ message, room }) => {
         const user = connectedUsers[socket.id];
+        console.log(user);
         // if (!user) {
         //     console.error('User not found for socket ID:', socket.id);
         //     return;
@@ -93,12 +122,20 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const user = connectedUsers[socket.id];
         if (user) {
-            socket.broadcast.emit('userLeft', user.username);
-            console.log(`${user.username} has left the chat`);
+            const room = user.room;
+            if (room) {
+                rooms[room] = rooms[room].filter(username => username !== user.username);
+                io.to(room).emit('userLeftRoom', user.username);
+            }
+
+            console.log(`User ${user.username} has disconnected`);
             delete connectedUsers[socket.id];
+            console.log(connectedUsers);
+            socket.broadcast.emit('userLeft', user.username);
+            emitUsersInRoom(room);
+
             emitConnectedUsers();
         }
-
     });
 });
 
