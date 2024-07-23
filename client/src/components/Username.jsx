@@ -4,30 +4,31 @@ import { UsernameContext } from '../contexts/UsernameContext';
 import { io } from 'socket.io-client';
 import { Input } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
 
 const socket = io('http://localhost:3000', {});
 
 const Username = () => {
     const [localUsername, setLocalUsername] = useState('1234');
     const [error, setError] = useState('');
-    const { setUsername } = useContext(UsernameContext);
+    const { connectedUsers, setConnectedUsers } = useContext(ConnectedUsersContext);
+    const { username, setUsername } = useContext(UsernameContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        socket.on('usernameError', (errorMessage) => {
-            setError(errorMessage);
-        });
-
-        return () => {
-            socket.off('usernameError');
-        };
-    }, []);
-
     const handleUserConnect = () => {
+        for (let user of connectedUsers) {
+            if (localUsername === user) {
+                setError('Username already in use');
+                return;
+            }
+        }
+
         if (localUsername.trim() !== '') {
             setUsername(localUsername);
+            setError('');
             socket.emit('userConnect', localUsername);
             navigate('/rooms');
+
         } else {
             alert('Please enter a username');
         }
@@ -36,14 +37,7 @@ const Username = () => {
     return (
         <div className='w-1/4'>
             <h1 className='text-2xl text-white text-center font-bold pb-1'>Enter Username</h1>
-            {/* <input
-                type="text"
-                placeholder="Username"
-                value={localUsername}
-                onChange={(e) => setLocalUsername(e.target.value)}
-                className='p-3'
-
-            /> */}
+            
             <Input
                 size="large"
                 placeholder="Username"
