@@ -1,94 +1,111 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import io from 'socket.io-client';
+import { useParams } from 'react-router-dom';
+import { UsernameContext } from '../contexts/UsernameContext';
+import { useNavigate } from 'react-router-dom';
+import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext.jsx';
+import Notification from '../components/Notification';
 
-const socket = io('http://localhost:3000', {});
+const socket = io('http://localhost:3000');
 
 function Chat() {
-    const [username, setUsername] = useState('');
-    const [messages, setMessages] = useState([]);
-    const [currentMessage, setCurrentMessage] = useState('');
-    const [isConnected, setIsConnected] = useState(false);
+    const { roomId } = useParams();
+    // const [username, setUsername] = useState('');
+    // const [messages, setMessages] = useState([]);
+    // const [currentMessage, setCurrentMessage] = useState('');
+    // const [isConnected, setIsConnected] = useState(false);
+    const { username } = useContext(UsernameContext);
+    const [usersInRoom, setUsersInRoom] = useState([]);
+    const [notification, setNotification] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        socket.on('newMessage', (data) => {
-            setMessages((prevMessages) => [...prevMessages, data]);
+        socket.emit('joinRoom', username, roomId);
+
+        const handleUserJoinedChat = (userJoinChat) => {
+            if (userJoinChat !== username) {
+                setNotification(`${userJoinChat} joined chat`);
+            };
+        };
+
+        const handleUserLeftChat = (userLeftChat) => {
+            if (userLeftChat !== username) {
+                setNotification(`${userLeftChat} left chat`);
+            }
+        };
+
+        const handleUserJoinedRoom = (userJoinRoom) => {
+            if (userJoinRoom.username !== username) {
+                setNotification(`${userJoinRoom.username} joined the room`);
+            }
+        };
+
+        const handleUserLeftRoom = (userLeftRoom) => {
+            setUsersInRoom(prevUsers => prevUsers.filter(user => user !== userLeftRoom));
+            if (userLeftRoom !== username) {
+                setNotification(`${userLeftRoom} left the room`);
+            }
+        };
+
+        socket.on('usersConnected', handleUserJoinedChat);
+        socket.on('userLeft', handleUserLeftChat);
+        socket.on('userJoinedRoom', handleUserJoinedRoom);
+        socket.on('userLeftRoom', handleUserLeftRoom);
+
+        socket.on('usersInRoom', (users) => {
+            setUsersInRoom(users);
         });
 
-        socket.on('chatHistory', (history) => {
-            setMessages(history);
+        // TODO: do 
+        socket.on('newMessage', (message) => {
+            if (message.room === roomId) {
+                setMessages(prevMessages => [...prevMessages, message]);
+            }
         });
 
         return () => {
+            socket.off('joinRoom');
+            socket.off('usersConnected');
+            socket.off('userLeft');
+            socket.off('userJoinedRoom');
+            socket.off('userLeftRoom');
+            socket.off('usersInRoom');
             socket.off('newMessage');
-            socket.off('chatHistory');
         };
-    }, []);
+    }, [roomId, username]);
 
-    const handleJoinChat = () => {
-        if (username.trim() !== '') {
-            socket.connect();
-            socket.emit('joinChat', username);
-            setIsConnected(true);
-        } else {
-            alert('Please enter a username');
-        }
-    };
-
-    const handleSendMessage = (event) => {
-        event.preventDefault();
-        if (currentMessage.trim() !== '') {
-            socket.emit('sendMessage', currentMessage);
-            setCurrentMessage('');
-        }
-    };
-
-    const handleLeaveChat = () => {
-        socket.disconnect();
-        setIsConnected(false);
-        setUsername('');
+    const handleDisconnect = () => {
+        socket.emit('leaveRoom', username, roomId);
+        setUsersInRoom(users => users.filter(user => user !== username));
+        navigate('/rooms');
     };
 
     return (
         <>
-            {/* {username} */}
-            <div className="chat-app">
-                {!isConnected ? (
-                    <div>
-                        <h2>Join Chat</h2>
-                        <input
-                            type="text"
-                            placeholder="Username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                        <button onClick={handleJoinChat}>Join</button>
-                    </div>
-                ) : (
-                    <div>
-                        <h2>Chat</h2>
-                        <ul className="message-list">
-                            {messages.map((message, index) => (
-                                <li key={index}>
-                                    <span className="username">{message.username}:</span> {message.message}
-                                    <span className="timestamp">{message.timestamp}</span>
-                                </li>
+            <Notification
+                message={notification}
+            />
+            <div className='w-4/5 mx-auto text-white'>
+                <div className='flex h-[85vh]'>
+                    <div className='bg-blue-500 w-[30%]'>
+                        users
+                        <ul>
+                            {usersInRoom.map((user, index) => (
+                                <li key={index}>{user}</li>
                             ))}
                         </ul>
-                        <form onSubmit={handleSendMessage}>
-                            <input
-                                type="text"
-                                value={currentMessage}
-                                onChange={(e) => setCurrentMessage(e.target.value)}
-                                placeholder="Type your message..."
-                            />
-                            <button type="submit">Send</button>
-                        </form>
-                        <button type="button" onClick={handleLeaveChat}>Leave</button>
                     </div>
-                )}
+                    <div className='bg-slate-300 w-[70%] flex justify-between'>
+                        chat
+                        <button
+                            className='bg-red-500 p-1 w-8 h-7'
+                            onClick={handleDisconnect}
+                        >
+                            X
+                        </button>
+                    </div>
+                </div>
             </div>
-
-
         </>
     );
 }
