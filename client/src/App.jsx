@@ -7,6 +7,8 @@ import RoomSelector from './components/RoomSelector';
 import { UsernameContext } from './contexts/UsernameContext';
 import { useContext, useEffect } from 'react';
 import Notification from './components/Notification';
+import ProtectedRoute from './components/ProtectedRoute';
+import { ConnectedUsersProvider } from './contexts/ConnectedUsersContext';
 
 function App() {
     const { username } = useContext(UsernameContext);
@@ -22,29 +24,37 @@ function App() {
 
     return (
         <>
-            {username
-                && <>
-                    <h1 className='text-2xl font-bold text-center pt-2'>Welcome, {username}</h1>
-                </>
-            }
+            <ConnectedUsersProvider>
 
-            {!isChatRoute && (
+                {username && (
+                    <>
+                        <h1 className='text-2xl font-bold text-center pt-2'>Welcome, {username}</h1>
+                    </>
+                )}
+
                 <div className='flex justify-center gap-20 pt-14 h-[70%]'>
-                    <ConnectedUsers />
+                    {!isChatRoute && <ConnectedUsers />}
                     <Routes>
                         <Route path="/" element={<Username />} />
-                        <Route path="/rooms" element={<RoomSelector />} />
-                        <Route path="/chat/:roomId" element={<Chat />} />
+                        <Route path="/rooms" element={
+                            <ProtectedRoute>
+                                <RoomSelector />
+                            </ProtectedRoute>
+                        } />
+                        <Route path="/chat/:roomId" element={
+                            <ProtectedRoute>
+                                <Chat />
+                            </ProtectedRoute>
+                        } />
                         <Route path='*' element={<Navigate to="/" replace />} />
                     </Routes>
                 </div>
-            )}
+                <Notification />
 
-            {isChatRoute && <Chat />}
-            <Chat />
-            <Notification />
+            </ConnectedUsersProvider>
         </>
-    )
+    );
+
 }
 
 export default App;
