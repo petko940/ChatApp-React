@@ -2,7 +2,7 @@ import { notification } from 'antd';
 import { useEffect } from 'react';
 
 const Notification = (
-    { message, description, placement = 'top' }
+    { message, placement = 'top', duration = 2 }
 ) => {
     const [api, contextHolder] = notification.useNotification();
 
@@ -10,11 +10,11 @@ const Notification = (
         if (message) {
             api.info({
                 message,
-                description,
                 placement,
+                duration,
             });
         }
-    }, [message, description, placement, api]);
+    }, [message, placement, api]);
 
     return (
         <>
