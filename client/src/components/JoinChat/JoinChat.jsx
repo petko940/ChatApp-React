@@ -1,18 +1,17 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UsernameContext } from '../contexts/UsernameContext';
+import { UsernameContext } from '../../contexts/UsernameContext';
 import { io } from 'socket.io-client';
 import { Input } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
+import { ConnectedUsersContext } from '../../contexts/ConnectedUsersContext';
 
 const socket = io('http://localhost:3000', {});
 
-const Username = () => {
+const JoinChat = () => {
     const [localUsername, setLocalUsername] = useState('1234');
     const [error, setError] = useState('');
-    const { connectedUsers, setConnectedUsers } = useContext(ConnectedUsersContext);
-    const { username, setUsername } = useContext(UsernameContext);
+    const { connectedUsers } = useContext(ConnectedUsersContext);
+    const { setUsername } = useContext(UsernameContext);
     const navigate = useNavigate();
 
     const handleUserConnect = () => {
@@ -58,4 +57,4 @@ const Username = () => {
     );
 };
 
-export default Username;
+export default JoinChat;
