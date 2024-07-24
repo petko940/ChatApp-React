@@ -1,12 +1,12 @@
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css'
-import Chat from './components/Chat'
-import ConnectedUsers from './components/ConnectedUsers';
-import Username from './components/Username';
-import RoomSelector from './components/RoomSelector';
+import Chat from './components/Chat/Chat';
+import ConnectedUsers from './components/ConnectedUsers/ConnectedUsers';
+import JoinChat from './components/JoinChat/JoinChat';
+import RoomSelector from './components/RoomSelector/RoomSelector';
 import { UsernameContext } from './contexts/UsernameContext';
 import { useContext, useEffect } from 'react';
-import Notification from './components/Notification';
+import Notification from './components/Notifications/Notification';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ConnectedUsersProvider } from './contexts/ConnectedUsersContext';
 
@@ -35,7 +35,7 @@ function App() {
                 <div className='flex justify-center gap-20 pt-14 h-[70%]'>
                     {!isChatRoute && <ConnectedUsers />}
                     <Routes>
-                        <Route path="/" element={<Username />} />
+                        <Route path="/" element={<JoinChat />} />
                         <Route path="/rooms" element={
                             <ProtectedRoute>
                                 <RoomSelector />
