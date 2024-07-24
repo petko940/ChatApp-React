@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import Notification from '../Notifications/Notification';
-import { UsernameContext } from '../../contexts/UsernameContext';
-import { ConnectedUsersContext } from '../../contexts/ConnectedUsersContext';
+import Notification from './Notification';
+import { UsernameContext } from '../contexts/UsernameContext';
+import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
+
+
 const socket = io('http://localhost:3000');
 
 const ConnectedUsers = () => {
@@ -56,7 +58,6 @@ const ConnectedUsers = () => {
             console.log('Disconnected from server');
         });
 
-        // Clean up event listeners on unmount
         return () => {
             socket.off('connectedUsers');
             socket.off('userJoined');

@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UsernameContext } from '../../contexts/UsernameContext';
+import { UsernameContext } from '../contexts/UsernameContext.jsx';
 import { io } from 'socket.io-client';
 import { Input } from 'antd';
-import { ConnectedUsersContext } from '../../contexts/ConnectedUsersContext';
+import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
 
 const socket = io('http://localhost:3000', {});
 
