@@ -69,7 +69,7 @@ const ConnectedUsers = () => {
     }, []);
 
     return (
-        <div className='flex flex-col border-2 px-16 pt-3'>
+        <div className='flex flex-col border-2 px-16 pt-3 backdrop-blur-lg'>
             <Notification
                 message={notification.message}
                 description={notification.description}

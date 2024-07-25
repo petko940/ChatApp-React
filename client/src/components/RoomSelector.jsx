@@ -14,17 +14,17 @@ const RoomSelector = () => {
 
             <div className='flex flex-col mx-auto w-3/4'>
                 <button
-                    className='text-white text-center border-2 p-1 m-2'
+                    className='text-white text-center border-2 p-5 m-2'
                     onClick={() => handleSelectRoom('general')}>
                     General
                 </button>
                 <button
-                    className='text-white text-center border-2 p-1 m-2'
+                    className='text-white text-center border-2 p-5 m-2'
                     onClick={() => handleSelectRoom('room1')}>
                     Room 1
                 </button>
                 <button
-                    className='text-white text-center border-2 p-1 m-2'
+                    className='text-white text-center border-2 p-5 m-2'
                     onClick={() => handleSelectRoom('room2')}>
                     Room 2
                 </button>
