@@ -17,12 +17,20 @@ const io = new Server(http, {
 app.use(express.static('public'));
 
 let connectedUsers = {};
-let messageHistory = [];
+
 let rooms = {
+    'general': [],
     'room1': [],
-    'room2': [],
-    'room3': []
+    'room2': []
 }
+
+const messageHistory = {
+    'general': [],
+    'room1': [],
+    'room2': []
+};
+
+const MAX_MESSAGES_PER_ROOM = 1500;
 
 const emitConnectedUsers = () => {
     const users = Object.values(connectedUsers).map(user => user.username);
@@ -67,7 +75,7 @@ io.on('connection', (socket) => {
                 targetSocketId = socketId;
                 break;
             };
-        }
+        };
         console.log("targetSocketId: ", targetSocketId);
 
         connectedUsers[targetSocketId] = { username, room };
@@ -76,7 +84,7 @@ io.on('connection', (socket) => {
 
         console.log(`${username} has joined the ${room} room`);
 
-        socket.emit('chatHistory', messageHistory);
+        socket.emit('messageHistory', messageHistory[room]);
         io.to(room).emit('userJoinedRoom', { username, room });
         emitUsersInRoom(room);
     });
@@ -88,7 +96,7 @@ io.on('connection', (socket) => {
                 targetSocketId = socketId;
                 break;
             };
-        }
+        };
 
         socket.leave(room);
         rooms[room] = rooms[room].filter(user => user !== username);
@@ -97,26 +105,27 @@ io.on('connection', (socket) => {
         connectedUsers[targetSocketId].room = null;
         console.log(`${username} has left ${room}`);
         console.log(connectedUsers);
+
+        
+        // clear message history if room is empty
+        if (rooms[room].length === 0 && room !== 'general') {
+            console.log(`Clearing message history for room ${room}`);
+            messageHistory[room] = [];
+        };
+        
         emitUsersInRoom(room);
-        console.log(`rooms`, rooms);
         emitConnectedUsers();
     });
 
-    // TODO Edit
-    socket.on('sendMessage', ({ message, room }) => {
-        const user = connectedUsers[socket.id];
-        console.log(user);
-        // if (!user) {
-        //     console.error('User not found for socket ID:', socket.id);
-        //     return;
-        // }
-        const timestamp = new Date().toISOString();
-        const newMessage = { username: user.username, message, timestamp };
-        messageHistory.push(newMessage);
-        if (messageHistory.length > 100) { // TODO check edit
-            messageHistory.shift();
+    socket.on('sendMessage', (message, username, roomId) => {
+        const newMessage = { username, message, timestamp: new Date().toISOString() };
+        messageHistory[roomId].push(newMessage);
+
+        if (messageHistory[roomId].length > MAX_MESSAGES_PER_ROOM) {
+            messageHistory[roomId].shift();
         }
-        io.emit('newMessage', newMessage);
+
+        io.to(roomId).emit('newMessage', newMessage);
     });
 
     socket.on('disconnect', () => {
@@ -126,14 +135,14 @@ io.on('connection', (socket) => {
             if (room) {
                 rooms[room] = rooms[room].filter(username => username !== user.username);
                 io.to(room).emit('userLeftRoom', user.username);
-            }
+            };
 
             console.log(`User ${user.username} has disconnected`);
             delete connectedUsers[socket.id];
             console.log(connectedUsers);
             socket.broadcast.emit('userLeft', user.username);
+            
             emitUsersInRoom(room);
-
             emitConnectedUsers();
         }
     });
