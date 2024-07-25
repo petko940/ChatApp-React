@@ -4,5 +4,9 @@
 
 #root {
     height: 100vh;
-    background-color: #2e3044;
+    background-image: url('./assets/background-image.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
