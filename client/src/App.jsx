@@ -1,14 +1,14 @@
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css'
-import Chat from './components/Chat/Chat';
-import ConnectedUsers from './components/ConnectedUsers/ConnectedUsers';
-import JoinChat from './components/JoinChat/JoinChat';
-import RoomSelector from './components/RoomSelector/RoomSelector';
-import { UsernameContext } from './contexts/UsernameContext';
+import Chat from './components/Chat/Chat.jsx';
+import ConnectedUsers from './components/ConnectedUsers.jsx';
+import JoinChat from './components/JoinChat.jsx';
+import RoomSelector from './components/RoomSelector.jsx';
+import { UsernameContext } from './contexts/UsernameContext.jsx';
 import { useContext, useEffect } from 'react';
-import Notification from './components/Notifications/Notification';
-import ProtectedRoute from './components/ProtectedRoute';
-import { ConnectedUsersProvider } from './contexts/ConnectedUsersContext';
+import Notification from './components/Notification.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import { ConnectedUsersProvider } from './contexts/ConnectedUsersContext.jsx';
 
 function App() {
     const { username } = useContext(UsernameContext);
@@ -26,13 +26,13 @@ function App() {
         <>
             <ConnectedUsersProvider>
 
-                {username && (
+                {/* {username && (
                     <>
                         <h1 className='text-2xl font-bold text-center pt-2'>Welcome, {username}</h1>
                     </>
-                )}
+                )} */}
 
-                <div className='flex justify-center gap-20 pt-14 h-[70%]'>
+                <div className='flex justify-center gap-20 pt-9 h-[70%]'>
                     {!isChatRoute && <ConnectedUsers />}
                     <Routes>
                         <Route path="/" element={<JoinChat />} />
