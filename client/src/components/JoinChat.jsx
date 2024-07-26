@@ -14,7 +14,8 @@ const JoinChat = () => {
     const { setUsername } = useContext(UsernameContext);
     const navigate = useNavigate();
 
-    const handleUserConnect = () => {
+    const handleUserConnect = (event) => {
+        event.preventDefault();
         for (let user of connectedUsers) {
             if (localUsername === user) {
                 setError('Username already in use');
@@ -36,23 +37,24 @@ const JoinChat = () => {
     return (
         <div className='w-1/4'>
             <h1 className='text-2xl text-white text-center font-bold pb-1'>Enter Username</h1>
-            
-            <Input
-                size="large"
-                placeholder="Username"
-                className='p-3 pl-7 placeholder:text-red-500 placeholder:text-center'
-                onChange={(e) => setLocalUsername(e.target.value)}
-                value={localUsername}
-                maxLength={30}
-            />
 
-            <button
-                onClick={handleUserConnect}
-                className='text-white text-center border-2 w-full p-2 mt-3'
-            >
-                Join
-            </button>
-            {error && <p>{error}</p>}
+            <form onSubmit={handleUserConnect}>
+                <Input
+                    size="large"
+                    placeholder="Username"
+                    className='p-3 pl-7 placeholder:text-red-500 placeholder:text-center'
+                    onChange={(e) => setLocalUsername(e.target.value)}
+                    value={localUsername}
+                    maxLength={30}
+                />
+
+                <button
+                    className='text-white text-center border-2 w-full p-2 mt-3'
+                >
+                    Join
+                </button>
+            </form>
+            {error && <p className='text-red-500'>{error}</p>}
         </div>
     );
 };
