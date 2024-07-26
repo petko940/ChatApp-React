@@ -26,13 +26,7 @@ function App() {
         <>
             <ConnectedUsersProvider>
 
-                {/* {username && (
-                    <>
-                        <h1 className='text-2xl font-bold text-center pt-2'>Welcome, {username}</h1>
-                    </>
-                )} */}
-
-                <div className='flex justify-center gap-20 pt-9 h-[70%]'>
+                <div className='flex justify-center gap-20 max-md:gap-5 pt-9 h-[70%]'>
                     {!isChatRoute && <ConnectedUsers />}
                     <Routes>
                         <Route path="/" element={<JoinChat />} />

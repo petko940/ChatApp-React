@@ -8,7 +8,7 @@ import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
 const socket = io('http://localhost:3000', {});
 
 const JoinChat = () => {
-    const [localUsername, setLocalUsername] = useState('1234');
+    const [localUsername, setLocalUsername] = useState('');
     const [error, setError] = useState('');
     const { connectedUsers } = useContext(ConnectedUsersContext);
     const { setUsername } = useContext(UsernameContext);

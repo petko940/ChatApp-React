@@ -11,7 +11,7 @@ const UsersInRoom = ({
 
             <hr className='w-full border-b' />
 
-            <h1 className='text-center text-xl p-2'>
+            <h1 className='text-center text-xl max-lg:text-base p-2'>
                 Connected Users
             </h1>
             <ul>

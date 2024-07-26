@@ -98,7 +98,7 @@ function Chat() {
             <Notification
                 message={notification}
             />
-            <div className='flex h-[90vh] w-5/6 mx-auto text-white select-none'>
+            <div className='flex h-[90vh] w-5/6 max-lg:w-full mx-auto text-white select-none'>
                 <UsersInRoom users={usersInRoom} />
 
                 <div className='bg-slate-300 w-[80%] flex flex-col rounded-r-lg'>
@@ -138,6 +138,7 @@ function Chat() {
                     <form onSubmit={handleSendMessage} autoComplete='off'
                         className='flex items-center p-2 border-t border-gray-400'>
                         <input
+                            autoFocus
                             name="message"
                             id="message"
                             type="text"

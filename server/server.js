@@ -4,6 +4,8 @@ const http = require('http').createServer(app);
 const cors = require('cors');
 const { Server } = require('socket.io');
 
+const PORT = process.env.PORT || 3000;
+
 app.use(cors({ origin: 'http://localhost:5173' }));
 
 const io = new Server(http, {
@@ -43,7 +45,6 @@ const emitUsersInRoom = (room) => {
         .map(user => user.username);
     io.to(room).emit('usersInRoom', usersInRoom);
 };
-
 
 io.on('connection', (socket) => {
     emitConnectedUsers();
@@ -147,6 +148,6 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(3000, () => {
-    console.log('Server listening on port 3000');
+http.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });

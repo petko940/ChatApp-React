@@ -8,10 +8,12 @@ const RoomSelector = () => {
     };
 
     return (
-        <div className='w-1/4'>
-            <h1 className='text-2xl text-white text-center font-bold pb-1'>Select Room</h1>
+        <div className='w-1/4 max-lg:w-1/3'>
+            <h1 className='text-2xl text-white text-center font-bold pb-1'>
+                Select Room
+            </h1>
 
-            <div className='flex flex-col mx-auto w-3/4'>
+            <div className='flex flex-col mx-auto w-3/4 max-md:w-full'>
                 <button
                     className='text-white text-center border-2 p-5 m-2'
                     onClick={() => handleSelectRoom('general')}>
