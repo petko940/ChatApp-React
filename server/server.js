@@ -52,18 +52,20 @@ io.on('connection', (socket) => {
         if (!username) {
             console.error('Username is required');
             return;
-        }
+        };
 
         for (let id in connectedUsers) {
             if (connectedUsers[id].username === username) {
                 socket.emit('usernameError', 'Username is already taken');
                 return;
-            }
-        }
+            };
+        };
 
         connectedUsers[socket.id] = { username, room: null };
-        console.log(connectedUsers);
+
         console.log(`User ${username} connected with ID: ${socket.id}`);
+        console.log(connectedUsers);
+
         io.emit('userConnected', username);
         emitConnectedUsers();
     });
@@ -76,7 +78,6 @@ io.on('connection', (socket) => {
                 break;
             };
         };
-        console.log("targetSocketId: ", targetSocketId);
 
         connectedUsers[targetSocketId] = { username, room };
         socket.join(room);
@@ -104,8 +105,6 @@ io.on('connection', (socket) => {
 
         connectedUsers[targetSocketId].room = null;
         console.log(`${username} has left ${room}`);
-        console.log(connectedUsers);
-
         
         // clear message history if room is empty
         if (rooms[room].length === 0 && room !== 'general') {
@@ -123,7 +122,7 @@ io.on('connection', (socket) => {
 
         if (messageHistory[roomId].length > MAX_MESSAGES_PER_ROOM) {
             messageHistory[roomId].shift();
-        }
+        };
 
         io.to(roomId).emit('newMessage', newMessage);
     });

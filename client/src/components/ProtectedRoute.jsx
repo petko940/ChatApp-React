@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { UsernameContext } from '../contexts/UsernameContext';

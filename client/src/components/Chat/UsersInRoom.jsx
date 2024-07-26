@@ -1,11 +1,11 @@
-import chatAppImage from '../../assets/chat-app2.jpg';
+import chatAppImage from '../../assets/chat-app.jpg';
 
 const UsersInRoom = ({
     users
 }) => {
 
     return (
-        <div className='bg-blue-500 w-[20%]'>
+        <div className='bg-blue-500 w-[20%] rounded-l-lg'>
             <img src={chatAppImage} height={'200px'} alt="chat-app"
                 className='w-[3.7rem] mx-auto' />
 
