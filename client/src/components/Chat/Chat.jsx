@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import io from 'socket.io-client';
 import { useParams } from 'react-router-dom';
 import { UsernameContext } from '../../contexts/UsernameContext.jsx';
 import { useNavigate } from 'react-router-dom';
-// import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext.jsx';
 import Notification from '../Notification.jsx';
 import UsersInRoom from './UsersInRoom.jsx';
 
@@ -83,6 +82,7 @@ function Chat() {
     const handleSendMessage = (event) => {
         event.preventDefault();
         const message = event.target.message.value;
+        if (message.trim() === '') return;
         socket.emit('sendMessage', message, username, roomId);
         event.target.message.value = '';
     };
@@ -98,49 +98,57 @@ function Chat() {
             <Notification
                 message={notification}
             />
-            <div className='w-4/5 mx-auto text-white'>
-                <div className='flex h-[85vh]'>
-                    <UsersInRoom users={usersInRoom} />
+            <div className='flex h-[90vh] w-5/6 mx-auto text-white select-none'>
+                <UsersInRoom users={usersInRoom} />
 
-                    <div className='bg-slate-300 w-[70%] flex flex-col'>
-                        <div className='flex justify-between'>
-                            room name
-                            <button
-                                className='bg-red-500 p-1 w-8 h-7'
-                                onClick={handleDisconnect}
-                            >
-                                X
-                            </button>
-                        </div>
-
-                        <hr className='w-full my-4 border-b'/>
-
-                        <div className='flex flex-col-reverse flex-grow overflow-y-auto p-2'>
-                            <div className='flex flex-col'>
-                                {messages.map((message, index) => (
-                                    <div key={index}>
-                                        {message.username} - {message.message}
-                                    </div>
-                                ))}
-                                <div ref={messagesEndRef} />
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleSendMessage}
-                            className='flex items-center p-2 border-t border-gray-400'>
-                            <input
-                                name="message"
-                                id="message"
-                                type="text"
-                                className='p-2 flex-grow border border-gray-300 rounded mr-2'
-                                placeholder="Type your message..."
-                            />
-                            <button type='submit' className='bg-blue-500 text-white p-2 rounded'>
-                                Send
-                            </button>
-                        </form>
-
+                <div className='bg-slate-300 w-[80%] flex flex-col rounded-r-lg'>
+                    <div className='flex justify-between items-center'>
+                        <h1 className='pl-2 text-2xl p-2 text-black font-bold'>
+                            {roomId[0].toUpperCase() + roomId.slice(1)}
+                        </h1>
+                        <button
+                            onClick={handleDisconnect}
+                        >
+                            <i className="fa-solid fa-rectangle-xmark text-red-600 text-5xl pr-1"></i>
+                        </button>
                     </div>
+
+                    <hr className='w-full border-b' />
+
+                    <div className='flex flex-col-reverse flex-grow overflow-y-auto p-2'>
+                        <div className='flex flex-col gap-1 select-none'>
+                            {messages.map((message, index) => (
+                                message.username === username
+                                    ?
+                                    <div key={index} className='text-right'>
+                                        <span className='text-black'>{message.username}</span>
+                                        <span className='break-words leading-10 bg-blue-500 rounded-sm py-2 px-3 ml-1'>{message.message}</span>
+                                    </div>
+                                    :
+                                    <div key={index}>
+                                        <span className='break-words leading-10 bg-gray-500 rounded-sm py-2 px-3 mr-1'>{message.message}</span>
+                                        <span className='text-black'>{message.username}</span>
+                                    </div>
+
+                            ))}
+                            <div ref={messagesEndRef} />
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleSendMessage} autoComplete='off'
+                        className='flex items-center p-2 border-t border-gray-400'>
+                        <input
+                            name="message"
+                            id="message"
+                            type="text"
+                            className='text-black p-2 flex-grow border border-gray-300 rounded mr-2'
+                            placeholder="Type message..."
+                        />
+                        <button type='submit' className='bg-blue-500 text-white p-2 rounded w-20'>
+                            Send <i className="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </>
