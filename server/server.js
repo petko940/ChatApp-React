@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const http = require('http').createServer(app);
 const cors = require('cors');
@@ -27,7 +28,13 @@ const io = new Server(http, {
     }
 });
 
-app.use(express.static('public'));
+// Serve static files from the React app build directory
+const buildPath = path.join(__dirname, 'client', 'build');
+app.use(express.static(buildPath));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+});
 
 let connectedUsers = {};
 
