@@ -23,13 +23,12 @@ const io = new Server(http, {
     }
 });
 
-// // Serve static files from the React app build directory
-// const buildPath = path.join(__dirname, 'client', 'build');
-// app.use(express.static(buildPath));
+const buildPath = path.join(__dirname, 'client', 'build');
+app.use(express.static(buildPath));
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(buildPath, 'index.html'));
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(buildPath, 'index.html'));
+});
 
 let connectedUsers = {};
 
