@@ -4,7 +4,7 @@ import { UsernameContext } from '../contexts/UsernameContext.jsx';
 import { io } from 'socket.io-client';
 import { Input } from 'antd';
 import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
-import { SOCKET_URL } from './config';
+import { SOCKET_URL } from './config.js';
 
 const socket = io(SOCKET_URL);
 // const socket = io('http://localhost:3000', {});
