@@ -44,7 +44,7 @@ const JoinChat = () => {
                 <Input
                     size="large"
                     placeholder="Username"
-                    className='p-3 pl-7 placeholder:text-red-500 placeholder:text-center'
+                    className='p-3 pl-7 placeholder:text-black placeholder:text-center'
                     onChange={(e) => setLocalUsername(e.target.value)}
                     value={localUsername}
                     maxLength={30}
