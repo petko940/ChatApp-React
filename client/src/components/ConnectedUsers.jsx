@@ -3,9 +3,10 @@ import io from 'socket.io-client';
 import Notification from './Notification';
 import { UsernameContext } from '../contexts/UsernameContext';
 import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
+import { SOCKET_URL } from './config';
 
-
-const socket = io('http://localhost:3000');
+const socket = io(SOCKET_URL);
+// const socket = io('http://localhost:3000');
 
 const ConnectedUsers = () => {
     const [users, setUsers] = useState([]);

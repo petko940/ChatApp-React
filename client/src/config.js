@@ -1,0 +1,1 @@
+export const SOCKET_URL = 'chat-app-react-server.vercel.app';
