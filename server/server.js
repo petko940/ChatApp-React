@@ -7,7 +7,8 @@ const { Server } = require('socket.io');
 
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = ['http://localhost:5173', 'https://chat-app-react-client-jet.vercel.app/'];
+// const allowedOrigins = ['http://localhost:5173', 'https://chat-app-react-client-jet.vercel.app/'];
+const allowedOrigins = ['https://chat-app-react-client-jet.vercel.app'];
 
 app.use(cors({
     origin: (origin, callback) => {
