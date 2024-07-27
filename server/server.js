@@ -23,11 +23,10 @@ const io = new Server(http, {
     }
 });
 
-const buildPath = path.join(__dirname, 'client', 'build');
-app.use(express.static(buildPath));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(buildPath, 'index.html'));
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 let connectedUsers = {};
