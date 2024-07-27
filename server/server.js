@@ -5,9 +5,9 @@ const http = require('http').createServer(app);
 const cors = require('cors');
 const { Server } = require('socket.io');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = ['http://localhost:5173', 'https://your-app.vercel.app'];
+const allowedOrigins = ['http://localhost:5173', 'https://chat-app-react-client-jet.vercel.app/'];
 
 app.use(cors({
     origin: (origin, callback) => {
