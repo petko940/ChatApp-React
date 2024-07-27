@@ -4,13 +4,24 @@ const http = require('http').createServer(app);
 const cors = require('cors');
 const { Server } = require('socket.io');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+const allowedOrigins = ['http://localhost:5173', 'https://your-app.vercel.app'];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
 
 const io = new Server(http, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: allowedOrigins,
         methods: ['GET', 'POST'],
         credentials: true
     }
@@ -24,7 +35,7 @@ let rooms = {
     'general': [],
     'room1': [],
     'room2': []
-}
+};
 
 const messageHistory = {
     'general': [],
@@ -106,13 +117,13 @@ io.on('connection', (socket) => {
 
         connectedUsers[targetSocketId].room = null;
         console.log(`${username} has left ${room}`);
-        
+
         // clear message history if room is empty
         if (rooms[room].length === 0 && room !== 'general') {
             console.log(`Clearing message history for room ${room}`);
             messageHistory[room] = [];
         };
-        
+
         emitUsersInRoom(room);
         emitConnectedUsers();
     });
@@ -141,14 +152,13 @@ io.on('connection', (socket) => {
             delete connectedUsers[socket.id];
             console.log(connectedUsers);
             socket.broadcast.emit('userLeft', user.username);
-            
+
             emitUsersInRoom(room);
             emitConnectedUsers();
         }
     });
 });
 
-http.listen(5000, () => {
-    // console.log(`Server listening on port ${PORT}`);
-    console.log(`Server listening on port 5000`);
+http.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });
