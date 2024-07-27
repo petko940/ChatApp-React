@@ -148,6 +148,7 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+http.listen(5000, () => {
+    // console.log(`Server listening on port ${PORT}`);
+    console.log(`Server listening on port 5000`);
 });
