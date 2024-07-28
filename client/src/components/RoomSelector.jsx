@@ -8,7 +8,7 @@ const RoomSelector = () => {
     };
 
     return (
-        <div className='w-1/4 max-lg:w-1/3'>
+        <div className='w-1/4 max-sm:w-1/2 max-lg:w-1/3'>
             <h1 className='text-2xl text-white text-center font-bold pb-1'>
                 Select Room
             </h1>
