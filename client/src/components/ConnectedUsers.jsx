@@ -5,8 +5,12 @@ import { UsernameContext } from '../contexts/UsernameContext';
 import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
 import { SOCKET_URL } from '../config.js';
 
-const socket = io(SOCKET_URL);
-// const socket = io('http://localhost:3000');
+const socket = io(SOCKET_URL,
+    {
+        transports: ['websocket'],
+        withCredentials: true
+    }
+);
 
 const ConnectedUsers = () => {
     const [users, setUsers] = useState([]);

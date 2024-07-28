@@ -6,8 +6,12 @@ import { Input } from 'antd';
 import { ConnectedUsersContext } from '../contexts/ConnectedUsersContext';
 import { SOCKET_URL } from '../config.js';
 
-const socket = io(SOCKET_URL);
-// const socket = io('http://localhost:3000', {});
+const socket = io(SOCKET_URL,
+    {
+        transports: ['websocket'],
+        withCredentials: true
+    }
+);
 
 const JoinChat = () => {
     const [localUsername, setLocalUsername] = useState('');
@@ -44,7 +48,7 @@ const JoinChat = () => {
                 <Input
                     size="large"
                     placeholder="Username"
-                    className='p-3 pl-7 placeholder:text-black placeholder:text-center'
+                    className='p-3 pl-7 placeholder:text-black'
                     onChange={(e) => setLocalUsername(e.target.value)}
                     value={localUsername}
                     maxLength={30}

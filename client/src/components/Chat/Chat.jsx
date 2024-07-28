@@ -7,8 +7,12 @@ import Notification from '../Notification.jsx';
 import UsersInRoom from './UsersInRoom.jsx';
 import { SOCKET_URL } from '../../config.js';
 
-const socket = io(SOCKET_URL);
-// const socket = io('http://localhost:3000');
+const socket = io(SOCKET_URL,
+    {
+        transports: ['websocket'],
+        withCredentials: true
+    }
+);
 
 function Chat() {
     const { roomId } = useParams();
