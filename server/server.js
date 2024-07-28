@@ -10,8 +10,14 @@ const PORT = 3000;
 // const allowedOrigins = ['http://localhost:5173', 'https://chat-app-react-client-jet.vercel.app/'];
 const allowedOrigins = ['https://chat-app-react-client-seven.vercel.app', 'http://localhost:5173'];
 
+// app.use(cors({
+//     origin: allowedOrigins,
+//     credentials: true
+// }));
+
 app.use(cors({
     origin: allowedOrigins,
+    methods: ['GET', 'POST'],
     credentials: true
 }));
 
