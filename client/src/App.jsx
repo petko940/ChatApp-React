@@ -26,7 +26,7 @@ function App() {
         <>
             <ConnectedUsersProvider>
 
-                <div className='flex justify-center gap-20 max-md:gap-5 pt-9 h-[70%]'>
+                <div className='flex justify-center gap-20 max-md:gap-5 max-sm:gap-2 pt-8 h-[70%]'>
                     {!isChatRoute && <ConnectedUsers />}
                     <Routes>
                         <Route path="/" element={<JoinChat />} />

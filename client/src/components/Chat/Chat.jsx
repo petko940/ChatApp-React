@@ -104,7 +104,7 @@ function Chat() {
             <Notification
                 message={notification}
             />
-            <div className='flex h-[90vh] w-5/6 max-lg:w-full mx-auto text-white select-none'>
+            <div className='flex h-[95vh] max-sm:h-[96vh] w-5/6 max-lg:w-full mx-auto text-white select-none'>
                 <UsersInRoom users={usersInRoom} />
 
                 <div className='bg-slate-300 w-[80%] flex flex-col rounded-r-lg'>

@@ -41,7 +41,7 @@ const JoinChat = () => {
     };
 
     return (
-        <div className='w-1/4'>
+        <div className='w-1/4 max-sm:w-1/2'>
             <h1 className='text-2xl text-white text-center font-bold pb-1'>Enter Username</h1>
 
             <form onSubmit={handleUserConnect}>
