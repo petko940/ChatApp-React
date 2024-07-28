@@ -1,2 +1,2 @@
-export const SOCKET_URL = 'chat-app-react-server.vercel.app';
+export const SOCKET_URL = 'https://chatapp-react-server-pelf.onrender.com/';
 // export const SOCKET_URL = 'localhost:3000';
