@@ -174,8 +174,8 @@ require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
-const ABLY_API_KEY = process.env.ABLY_API_KEY;
-console.log(ABLY_API_KEY);
+const ABLY_API_KEY = 'cYPT7Q.rAhBvg:QR2ljuo0IVdL8jCCA2nPQXpIEgdkfNfzesgE4luIUio';
+
 // Initialize Ably
 const ably = new Ably.Realtime(ABLY_API_KEY);
 
