@@ -7,13 +7,7 @@ const { Server } = require('socket.io');
 
 const PORT = 3000;
 
-// const allowedOrigins = ['http://localhost:5173', 'https://chat-app-react-client-jet.vercel.app/'];
 const allowedOrigins = ['https://chat-app-react-client-seven.vercel.app', 'http://localhost:5173'];
-
-// app.use(cors({
-//     origin: allowedOrigins,
-//     credentials: true
-// }));
 
 app.use(cors({
     origin: allowedOrigins,
@@ -29,11 +23,11 @@ const io = new Server(http, {
     }
 });
 
-app.use(express.static(path.join(__dirname, 'dist')));
+// app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// });
 
 let connectedUsers = {};
 
