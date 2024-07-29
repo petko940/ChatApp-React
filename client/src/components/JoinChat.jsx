@@ -60,7 +60,7 @@ const JoinChat = () => {
                     Join
                 </button>
             </form>
-            {error && <p className='text-red-500'>{error}</p>}
+            {error && <p className='text-red-500 text-center'>{error}</p>}
         </div>
     );
 };
