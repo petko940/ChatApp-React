@@ -160,6 +160,14 @@ io.on('connection', (socket) => {
             emitConnectedUsers();
         }
     });
+
+    setInterval(() => {
+        socket.emit('ping');
+    }, 10000); 
+
+    socket.on('pong', () => {
+        console.log(`Pong received from ${socket.id}`);
+    });
 });
 
 http.listen(PORT, () => {
