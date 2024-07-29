@@ -9,15 +9,7 @@ import { useContext, useEffect } from 'react';
 import Notification from './components/Notification.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { ConnectedUsersProvider } from './contexts/ConnectedUsersContext.jsx';
-import { io } from 'socket.io-client';
-import { SOCKET_URL } from '../src/config.js';
 
-const socket = io(SOCKET_URL,
-    {
-        transports: ['websocket'],
-        withCredentials: true
-    }
-);
 
 function App() {
     const { username } = useContext(UsernameContext);
@@ -30,17 +22,6 @@ function App() {
             navigate('/');
         }
     }, [username, location.pathname]);
-
-    useEffect(() => {
-        socket.on('ping', () => {
-            console.log('Ping received from server');
-            socket.emit('pong');
-        });
-
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
 
     return (
         <>

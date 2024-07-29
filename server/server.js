@@ -161,14 +161,17 @@ io.on('connection', (socket) => {
         }
     });
 
-    setInterval(() => {
-        socket.emit('ping');
-    }, 20000); 
-
-    socket.on('pong', () => {
-        console.log(`Pong received from ${socket.id}`);
-    });
 });
+
+setInterval(() => {
+    fetch('http://localhost:3000/')
+        .then(response => {
+            console.log('Pinging server...');
+        })
+        .catch(error => {
+            console.error('Error pinging server:', error);
+        });
+}, 60000);
 
 http.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
