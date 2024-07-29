@@ -9,6 +9,7 @@ import { useContext, useEffect } from 'react';
 import Notification from './components/Notification.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { ConnectedUsersProvider } from './contexts/ConnectedUsersContext.jsx';
+import { io } from 'socket.io-client';
 import { SOCKET_URL } from '../src/config.js';
 
 const socket = io(SOCKET_URL,
