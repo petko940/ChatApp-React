@@ -43,6 +43,7 @@ const messageHistory = {
     'room2': []
 };
 
+console.log(messageHistory['general']);
 const MAX_MESSAGES_PER_ROOM = 1500;
 
 const emitConnectedUsers = () => {
@@ -135,6 +136,8 @@ io.on('connection', (socket) => {
         if (messageHistory[roomId].length > MAX_MESSAGES_PER_ROOM) {
             messageHistory[roomId].shift();
         };
+
+        console.log(messageHistory['general']);
 
         io.to(roomId).emit('newMessage', newMessage);
     });
