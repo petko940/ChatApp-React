@@ -163,7 +163,7 @@ io.on('connection', (socket) => {
 
     setInterval(() => {
         socket.emit('ping');
-    }, 60001); 
+    }, 20000); 
 
     socket.on('pong', () => {
         console.log(`Pong received from ${socket.id}`);
