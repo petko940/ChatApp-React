@@ -21,7 +21,7 @@ function App() {
         if (!username && location.pathname !== '/') {
             navigate('/');
         }
-    }, [username, location.pathname]);
+    }, [username, location.pathname, navigate]);
 
     return (
         <>
