@@ -171,7 +171,7 @@ setInterval(() => {
         .catch(error => {
             console.error('Error pinging server:', error);
         });
-}, 60000);
+}, 30000);
 
 http.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
